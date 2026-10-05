@@ -1,0 +1,5 @@
+{
+  "port": 4317,
+  "timeoutMs": 5000,
+  "loggingConfig": "config/logging.json"
+}

@@ -1,0 +1,6 @@
+{
+  "port": 4317,
+  "timeoutMs": 5000,
+  "paymentApi": "https://pay.internal/v2",
+  "db": { "host": "orders-db", "poolSize": 10 }
+}

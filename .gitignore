@@ -1,0 +1,12 @@
+.venv/
+.env
+__pycache__/
+.ruff_cache/
+.pytest_cache/
+# 실습 중 생기는 파일
+results/
+data/
+work/
+approvals.jsonl
+usage_log.csv
+.DS_Store

@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>내 에이전트</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        font-size: 18px;
+        max-width: 760px;
+        margin: 40px auto;
+        padding: 0 16px;
+        background: #fafafa;
+        color: #222;
+      }
+      form {
+        display: flex;
+        gap: 8px;
+      }
+      input {
+        flex: 1;
+        font-size: 18px;
+        padding: 10px;
+      }
+      button {
+        font-size: 18px;
+        padding: 10px 18px;
+      }
+      #log {
+        font-family: ui-monospace, monospace;
+        font-size: 15px;
+        background: #1e1e1e;
+        color: #ddd;
+        padding: 16px;
+        border-radius: 8px;
+        min-height: 120px;
+        white-space: pre-wrap;
+      }
+      #answer {
+        font-size: 20px;
+        padding: 16px;
+        border-left: 4px solid #2a7;
+        background: #fff;
+      }
+      #approval {
+        margin-top: 12px;
+        padding: 12px 16px;
+        border: 2px solid #e0a800;
+        background: #fff8e1;
+        border-radius: 8px;
+      }
+      .error {
+        color: #c33;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>내 에이전트</h1>
+    <form>
+      <input
+        name="question"
+        value="README.md를 읽고 이 서버의 포트 번호를 알려줘"
+      />
+      <button>보내기</button>
+    </form>
+    <h2>진행 상황</h2>
+    <div id="log"></div>
+    <div id="approval" hidden>
+      <p></p>
+      <button type="button" class="yes">승인</button>
+      <button type="button" class="no">거절</button>
+    </div>
+    <h2>답변</h2>
+    <div id="answer"></div>
+    <script>
+      const form = document.querySelector("form");
+      const log = document.querySelector("#log");
+      const answer = document.querySelector("#answer");
+      const approval = document.querySelector("#approval");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        log.textContent = "";
+        answer.textContent = "";
+        form.querySelector("button").disabled = true;
+        const start = Date.now();
+        const write = (text) => {
+          const seconds = ((Date.now() - start) / 1000).toFixed(1);
+          log.textContent += `[${seconds}s] ${text}\n`;
+        };
+        const short = (text) => text.replace(/\s+/g, " ").slice(0, 60);
+        const finish = () => {
+          source.close();
+          approval.hidden = true;
+          form.querySelector("button").disabled = false;
+        };
+        const decide = async (id, ok) => {
+          approval.hidden = true;
+          write(ok ? "  사람: 승인" : "  사람: 거절");
+          await fetch(`/approve/${id}?ok=${ok}`, { method: "POST" });
+        };
+        const askApproval = (event) => {
+          approval.querySelector("p").textContent =
+            `${event.name}(${event.arguments}) 실행할까요?`;
+          approval.querySelector(".yes").onclick = () => decide(event.id, true);
+          approval.querySelector(".no").onclick = () => decide(event.id, false);
+          approval.hidden = false;
+        };
+
+        const url = "/ask?question=" + encodeURIComponent(form.question.value);
+        const source = new EventSource(url);
+
+        source.onmessage = (msg) => {
+          const event = JSON.parse(msg.data);
+          if (event.type === "turn") {
+            write(`${event.turn}회차: 모델에게 묻는 중...`);
+          } else if (event.type === "tool_call") {
+            write(`  도구 요청: ${event.name}(${event.arguments})`);
+          } else if (event.type === "approval") {
+            write("  승인 기다리는 중...");
+            askApproval(event);
+          } else if (event.type === "tool_result") {
+            write(`  도구 결과: ${short(event.content)}`);
+          } else {
+            write("끝");
+            answer.textContent = event.content;
+            answer.className = event.type;
+            finish();
+          }
+        };
+        source.onerror = () => {
+          write("연결이 끊겼습니다");
+          finish();
+        };
+      });
+    </script>
+  </body>
+</html>

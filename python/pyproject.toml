@@ -1,0 +1,23 @@
+[project]
+name = "agent-from-scratch"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.142.2",
+    "openai>=3.24.0",
+    "uvicorn[standard]>=0.54.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
+
+[tool.ruff]
+# 튜토리얼 문서 속 코드 조각(일부 발췌)은 포맷 대상에서 뺍니다.
+extend-exclude = ["*.md"]
+
+[tool.ruff.lint]
+# BLE001: 에이전트 루프는 도구 실패를 모두 잡아 모델에게 돌려주는 게 의도입니다.
+# DTZ011: 교육용 예제라 date.today()로 현지 날짜를 그대로 씁니다.
+ignore = ["BLE001", "DTZ011"]

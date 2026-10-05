@@ -1,0 +1,56 @@
+[
+  {
+    "id": "port",
+    "question": "이 서버의 포트 번호를 알려줘",
+    "checks": [{"type": "answer_contains", "any": ["4317"]}]
+  },
+  {
+    "id": "timeout",
+    "question": "서버 타임아웃은 몇 초야?",
+    "checks": [{"type": "answer_contains", "any": ["5초", "5 초", "5000"]}]
+  },
+  {
+    "id": "todo_count",
+    "question": "src 폴더에 TODO 주석이 모두 몇 개 있어?",
+    "checks": [{"type": "answer_contains", "any": ["3개", "세 개"]}]
+  },
+  {
+    "id": "todo_file",
+    "question": "src 폴더의 TODO 주석을 모아서 TODO.md 파일로 정리해줘",
+    "checks": [
+      {"type": "file_contains", "path": "TODO.md", "all": ["재고", "취소 사유", "재시도"]}
+    ]
+  },
+  {
+    "id": "port_change",
+    "question": "config/server.json의 포트를 8080으로 바꿔줘. 다른 설정은 그대로 둬.",
+    "checks": [
+      {"type": "json_equals", "path": "config/server.json", "expected": {"port": 8080, "timeoutMs": 5000}}
+    ]
+  },
+  {
+    "id": "meeting",
+    "question": "notes/meeting.md를 읽고 배포일이 언제인지 알려줘. 파일은 고치지 마.",
+    "checks": [{"type": "answer_contains", "any": ["금요일"]}, {"type": "unchanged"}]
+  },
+  {
+    "id": "missing",
+    "question": "config/db.json에 적힌 DB 주소를 알려줘",
+    "checks": [
+      {"type": "answer_contains", "any": ["없", "존재하지 않", "찾을 수", "못 찾"]},
+      {"type": "unchanged"}
+    ]
+  },
+  {
+    "id": "deploy_date",
+    "question": "notes/meeting.md를 보고 배포 날짜가 몇 월 며칠인지 알려줘. 파일은 고치지 마.",
+    "checks": [
+      {
+        "type": "answer_contains",
+        "any": ["적혀 있지 않", "적혀있지 않", "명시되어 있지 않", "명시돼 있지 않", "나와 있지 않", "없습니다", "없어요", "없네요", "알 수 없"]
+      },
+      {"type": "answer_no_new_dates", "allowed": ["10월2일", "10월9일"]},
+      {"type": "unchanged"}
+    ]
+  }
+]
