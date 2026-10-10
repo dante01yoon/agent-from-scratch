@@ -1,7 +1,7 @@
 # agent-from-scratch
 
 프레임워크 없이 Python으로 AI 에이전트를 처음부터 만들어 보는 강의 **「에이전트 개발 입문」**의 예제 코드입니다.
-1편의 `while` 문 하나에서 시작해 8편에서 작은 코딩 에이전트를 완성합니다.
+1편의 `while` 문 하나에서 시작해 8편에서 작은 코딩 에이전트를 완성합니다. 9편부터는 보너스 "안전과 신뢰성"입니다.
 
 모델은 [OpenRouter](https://openrouter.ai)를 거쳐 DeepSeek·GLM 같은 저렴한 모델을 [OpenAI Python SDK](https://github.com/openai/openai-python)로 부릅니다.
 
@@ -32,11 +32,15 @@ cd ep00 && uv run --env-file ../.env python check_setup.py
 | 6 | 평가 — "잘 된다"를 숫자로 재기 | `ep06/` |
 | 7 | 웹 화면 입히기 (로컬 서버) | `ep07/` |
 | 8 | 종합 — 미니 코딩 에이전트 | `ep08/` |
+| 9 | 보너스 · 프롬프트 인젝션 — 직접 공격해 보고 막기 | `ep09/` |
+| 10 | 보너스 · 도구 인자 검증 — 모델의 실수를 스스로 고치게 (Pydantic) | `ep10/` |
 
 각 편 폴더로 들어가 `uv run --env-file ../.env python <파일>`로 실행합니다. 편마다 폴더가 독립적이라 어느 편부터 봐도 됩니다.
 과제의 완성 코드는 각 편의 `solutions/`에 있습니다. 단계별 글 튜토리얼과 과제 해설은 강의 수업 자료로 제공됩니다.
 
 ## 참고
+
+- 9편 `sample_project/deploy.env`의 키는 연습용 가짜 값입니다. 진짜 키를 실습 폴더에 두지 마세요.
 
 - 4편부터는 모든 모델 호출에 OpenRouter 가격 상한(`provider.max_price`)을 넣었습니다. 같은 모델도 제공업체마다 가격이 크게 다를 수 있어서입니다 (3편에서 다룹니다).
 - 3편 `fake_server.py`는 API 키 없이 실패 상황(깨진 JSON, 429·500 오류 등)을 재현하는 연습용 가짜 서버입니다.
