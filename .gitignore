@@ -10,3 +10,5 @@ work/
 approvals.jsonl
 usage_log.csv
 .DS_Store
+traces/
+timeline.html
